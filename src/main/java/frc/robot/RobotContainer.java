@@ -58,9 +58,9 @@ public class RobotContainer {
     new JoystickButton(gamepad, XboxController.Button.kBumperRight.value).whileHeld(new BellSpeedThroughTarget(m_flagwaver, m_vision));
 
     new GetDpadUp().whenPressed(new FaceAngle(0, m_drivetrain));
-    new GetDpadLeft().whenPressed(new FaceAngle(90, m_drivetrain));
+    new GetDpadRight().whenPressed(new FaceAngle(90, m_drivetrain));
     new GetDpadDown().whenPressed(new FaceAngle(180, m_drivetrain));
-    new GetDpadRight().whenPressed(new FaceAngle(270, m_drivetrain));
+    new GetDpadLeft().whenPressed(new FaceAngle(270, m_drivetrain));
   }
 
   /**
