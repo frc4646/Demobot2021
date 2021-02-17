@@ -53,7 +53,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(gamepad, XboxController.Button.kA.value).whenPressed(new FlagWave(m_flagwaver));
     new JoystickButton(gamepad, XboxController.Button.kB.value).whenPressed(new FlagStop(m_flagwaver));
-    new JoystickButton(gamepad, XboxController.Button.kY.value).whenPressed(new StraightDrive(m_drivetrain));
+    new JoystickButton(gamepad, XboxController.Button.kY.value).whileHeld(new StraightDrive(m_drivetrain));
     new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTarget(m_vision, m_drivetrain));
     new JoystickButton(gamepad, XboxController.Button.kBumperRight.value).whileHeld(new BellSpeedThroughTarget(m_flagwaver, m_vision));
 
