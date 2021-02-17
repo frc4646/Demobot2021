@@ -98,7 +98,7 @@ public class RobotContainer {
     return gamepad.getPOV()==180;
   }
 
-  public static boolean GetDpadRight()
+  public static boolean getDpadRight()
   {
     return gamepad.getPOV()==270;
   }

@@ -7,6 +7,6 @@ public class GetDpadRight extends Button {
     @Override
     public boolean get()
     {
-      return RobotContainer.GetDpadRight();
+      return RobotContainer.getDpadRight();
     }
 }

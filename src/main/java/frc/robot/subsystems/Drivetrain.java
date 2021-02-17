@@ -81,7 +81,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void driveByPercent(double leftSpeed, double rightSpeed)
   {
-      frontLeftDrive.set(ControlMode.PercentOutput, rightSpeed);
+      frontRightDrive.set(ControlMode.PercentOutput, rightSpeed);
       backLeftDrive.set(ControlMode.PercentOutput, leftSpeed);
   }
 
