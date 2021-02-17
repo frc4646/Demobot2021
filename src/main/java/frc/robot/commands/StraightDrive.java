@@ -5,11 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 public class StraightDrive extends CommandBase {
   /** Creates a new StraightDrive. */
-  public StraightDrive() {
+  private int driveDirection;
+  private static Drivetrain m_drivetrain;
+  public StraightDrive(Drivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_drivetrain = drivetrain;
+
+    addRequirements(m_drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -18,7 +26,15 @@ public class StraightDrive extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    //Determines whether to drive forward or backward
+    if (RobotContainer.getLeftStickY() >= 0) driveDirection = 1;
+    else driveDirection = -1;
+
+    //Drives the robot straight
+    m_drivetrain.driveByPercent((.5 - m_drivetrain.navX_kP * m_drivetrain.navX_error ) * driveDirection, 
+                                (.5 + m_drivetrain.navX_kP * m_drivetrain.navX_error ) * driveDirection);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

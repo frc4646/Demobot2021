@@ -5,13 +5,35 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Spark;
+import frc.robot.Constants;
+import frc.robot.commands.FlagStop;
 
 public class FlagWaver extends SubsystemBase {
   /** Creates a new FlagWaver. */
-  public FlagWaver() {}
+
+  final Spark flagMotor;
+  private final double flagSpeed;
+
+  public FlagWaver() {
+    flagMotor = new Spark(Constants.flagMotorPort);
+    flagSpeed = 0.25;
+
+    setDefaultCommand(new FlagStop(this));
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void setMotorSpeed(double speed)
+  {
+    flagMotor.setSpeed(speed);
+  }
+
+  public double getIdealFlagSpeed()
+  {
+    return flagSpeed;
   }
 }

@@ -5,11 +5,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.FlagWaver;
+import frc.robot.subsystems.Vision;
 
 public class BellSpeedThroughTarget extends CommandBase {
   /** Creates a new BallSpeedThroughTarget. */
-  public BellSpeedThroughTarget() {
+
+  private double minDist = 30;
+  private double maxDist = 110;
+
+  private final FlagWaver m_flagWaver;
+  private final Vision m_vision;
+
+  public BellSpeedThroughTarget(FlagWaver flagWaver, Vision vision) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_flagWaver = flagWaver;
+    m_vision = vision;
+
+    addRequirements(m_flagWaver);
+    addRequirements(m_vision);
   }
 
   // Called when the command is initially scheduled.
@@ -18,11 +32,31 @@ public class BellSpeedThroughTarget extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    //The range of distances are 30 inches - 110 inches
+    if (m_vision.IsTrackingTarget())
+    {
+      double dist = m_vision.getDistanceToTarget();
+      if (dist < minDist) dist = minDist;
+      else if (dist > maxDist) dist = maxDist;
+      double speed = ((dist-minDist)*(100/(maxDist-minDist)))/100; //Cause apparently java doesn't have Math.Clamp()
+      speed = 1 - speed; //Close=fast bell Far=Slow Bell
+      m_flagWaver.setMotorSpeed(speed);
+      System.out.println("Distance: " + dist);
+      System.out.println("Flag Speed: " + speed);
+    }
+    else
+    {
+      System.out.println("Cannot find target.");
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    
+    m_flagWaver.setMotorSpeed(0);
+  }
 
   // Returns true when the command should end.
   @Override

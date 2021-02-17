@@ -6,13 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
 
 import frc.robot.subsystems.*;
+import frc.robot.custom_triggers.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 // Imported Commands
 import frc.robot.commands.ExampleCommand;
@@ -20,6 +19,7 @@ import frc.robot.commands.FlagWave;
 import frc.robot.commands.FlagStop;
 import frc.robot.commands.StraightDrive;
 import frc.robot.commands.FaceAngle;
+import frc.robot.commands.AlignToTarget;
 import frc.robot.commands.BellSpeedThroughTarget;
 
 /**
@@ -37,8 +37,7 @@ public class RobotContainer {
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
-  private final XboxController gamepad = new XboxController(Constants.gamepadPort);
-
+  private static final XboxController gamepad = new XboxController(Constants.gamepadPort);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
@@ -52,49 +51,16 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(gamepad, XboxController.Button.kA.value).whenPressed(new FlagWave(m_flagwaver));
+    new JoystickButton(gamepad, XboxController.Button.kB.value).whenPressed(new FlagStop(m_flagwaver));
+    new JoystickButton(gamepad, XboxController.Button.kY.value).whenPressed(new StraightDrive(m_drivetrain));
+    new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTarget(m_vision, m_drivetrain));
+    new JoystickButton(gamepad, XboxController.Button.kBumperRight.value).whileHeld(new BellSpeedThroughTarget(m_flagwaver, m_vision));
 
-    if (gamepad.getAButtonPressed()) new FlagWave();
-    if (gamepad.getBButtonPressed()) new FlagStop();
-    if (gamepad.getYButton()) new StraightDrive();
-    if (gamepad.getXButton()) new FaceAngle(90);
-    if (Robot.m_io.getGamepadDpadAngle() != -1){
-      switch (Robot.m_io.getGamepadDpadAngle()){
-        case 0: new FaceAngle(0);
-        break;
-        case 90: new FaceAngle(90);
-        break;
-        case 180: new FaceAngle(180);
-        break;
-        case 270: new FaceAngle(270);
-        break;
-      }
-    }
-    gamepad.getBumper(Hand.kRight) new BellSpeedThroughTarget();
-
-    new JoystickButton(gamepad, XboxController.Button.kA.value).whenPressed(new FlagWave());
-    new JoystickButton(gamepad, XboxController.Button.kB.value).whenPressed(new FlagStop());
-    new JoystickButton(gamepad, XboxController.Button.kY.value).whenPressed(new StraightDrive());
-    new JoystickButton(gamepad, XboxController.Button.kBumperRight.value).whileHeld(new BellSpeedThroughTarget());
-
-    //Trigger exampleTrigger = new Trigger(gamepad.getPOV(0)==0::get);
-
-    new JoystickButton(gamepad, gamepad.getPOV(0)).whenPressed(new FaceAngle(0));
-    new JoystickButton(gamepad, gamepad.getPOV(90)).whenPressed(new FaceAngle(90));
-    new JoystickButton(gamepad, gamepad.getPOV(180)).whenPressed(new FaceAngle(180));
-    new JoystickButton(gamepad, gamepad.getPOV(270)).whenPressed(new FaceAngle(270));
-    
-    /*if (gamepad.getPOV() != -1){
-      switch (gamepad.getPOV()){
-        case 0: new FaceAngle(0);
-        break;
-        case 90: new FaceAngle(90);
-        break;
-        case 180: new FaceAngle(180);
-        break;
-        case 270: new FaceAngle(270);
-        break;
-      }
-    }*/
+    new GetDpadUp().whenPressed(new FaceAngle(0, m_drivetrain));
+    new GetDpadLeft().whenPressed(new FaceAngle(90, m_drivetrain));
+    new GetDpadDown().whenPressed(new FaceAngle(180, m_drivetrain));
+    new GetDpadRight().whenPressed(new FaceAngle(270, m_drivetrain));
   }
 
   /**
@@ -105,5 +71,35 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;
+  }
+
+  public static double getLeftStickY()
+  {
+    return RobotContainer.gamepad.getY(Hand.kLeft);
+  }
+
+  public static double getRightStickY()
+  {
+    return RobotContainer.gamepad.getY(Hand.kRight);
+  }
+
+  public static boolean getDpadUp()
+  {
+    return gamepad.getPOV()==0;
+  }
+
+  public static boolean getDpadLeft()
+  {
+    return gamepad.getPOV()==90;
+  }
+
+  public static boolean getDpadDown()
+  {
+    return gamepad.getPOV()==180;
+  }
+
+  public static boolean GetDpadRight()
+  {
+    return gamepad.getPOV()==270;
   }
 }

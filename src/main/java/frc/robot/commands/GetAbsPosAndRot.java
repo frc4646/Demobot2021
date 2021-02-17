@@ -5,11 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Drivetrain;
 
 public class GetAbsPosAndRot extends CommandBase {
   /** Creates a new GetAbsPosAndRot. */
-  public GetAbsPosAndRot() {
+  private static Drivetrain m_drivetrain;
+
+  public GetAbsPosAndRot(Drivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_drivetrain = drivetrain;
+
+    addRequirements(m_drivetrain);
   }
 
   // Called when the command is initially scheduled.
