@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 public class StraightDrive extends CommandBase {
   /** Creates a new StraightDrive. */
