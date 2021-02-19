@@ -17,6 +17,16 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Encoder;
 
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+
+import frc.robot.PathweaverConstants;
+
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
 
@@ -38,6 +48,10 @@ public class Drivetrain extends SubsystemBase {
   public double navX_tolerance;
   public double navX_derivativeTolerance;
   public double navX_error;
+
+  public String trajectoryJSON;
+  public Trajectory trajectory;
+  public Path trajectoryPath;
 
   public Drivetrain() {
     frontLeftDrive = new VictorSPX(Constants.frontLeftDrivePort);
@@ -68,6 +82,15 @@ public class Drivetrain extends SubsystemBase {
     navX_PID.setTolerance(navX_tolerance, navX_derivativeTolerance);
 
     encoderCountsPerInch = 0;
+
+    trajectoryJSON = "paths/test1.wpilib.json";
+    trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+    try {
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    }
+    catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
 
     setDefaultCommand(new GamepadDriveTeleOp(this));
   }
