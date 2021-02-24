@@ -100,7 +100,7 @@ public class RobotContainer {
     // return m_autoCommand;
 
     //Pathweaver stuff
-    trajectoryJSON = "paths/test1.wpilib.json";
+    trajectoryJSON = "paths/Test1.wpilib.json";
     trajectoryPath =  Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
     try {
       test1Trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
