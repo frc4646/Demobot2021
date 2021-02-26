@@ -117,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     backLeftDrive.setVoltage(leftVolts);
-    frontRightDrive.setVoltage(-rightVolts);
+    frontRightDrive.setVoltage(rightVolts);
   }
 
   // Encoders
