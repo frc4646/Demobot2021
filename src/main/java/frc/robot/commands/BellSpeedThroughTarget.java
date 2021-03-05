@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlagWaver;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Limelight;
 
 public class BellSpeedThroughTarget extends CommandBase {
   /** Creates a new BallSpeedThroughTarget. */
@@ -15,15 +15,15 @@ public class BellSpeedThroughTarget extends CommandBase {
   private double maxDist = 110;
 
   private final FlagWaver m_flagWaver;
-  private final Vision m_vision;
+  private final Limelight m_limelight;
 
-  public BellSpeedThroughTarget(FlagWaver flagWaver, Vision vision) {
+  public BellSpeedThroughTarget(FlagWaver flagWaver, Limelight vision) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_flagWaver = flagWaver;
-    m_vision = vision;
+    m_limelight = vision;
 
     addRequirements(m_flagWaver);
-    addRequirements(m_vision);
+    addRequirements(m_limelight);
   }
 
   // Called when the command is initially scheduled.
@@ -34,9 +34,9 @@ public class BellSpeedThroughTarget extends CommandBase {
   @Override
   public void execute() {
     //The range of distances are 30 inches - 110 inches
-    if (m_vision.IsTrackingTarget())
+    if (m_limelight.IsTrackingTarget())
     {
-      double dist = m_vision.getDistanceToTarget();
+      double dist = m_limelight.getDistanceToTarget();
       if (dist < minDist) dist = minDist;
       else if (dist > maxDist) dist = maxDist;
       double speed = ((dist-minDist)*(100/(maxDist-minDist)))/100; //Cause apparently java doesn't have Math.Clamp()

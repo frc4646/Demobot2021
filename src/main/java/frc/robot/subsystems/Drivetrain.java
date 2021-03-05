@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.GamepadDriveTeleOp;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
@@ -27,8 +25,9 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 
-import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.robot.PathweaverConstants;
+
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 
@@ -40,21 +39,28 @@ public class Drivetrain extends SubsystemBase {
   final WPI_TalonSRX backLeftDrive;
   final WPI_VictorSPX backRightDrive;
 
-  final AHRS navX;
-  final PIDController navX_PID;
-
   private final Encoder rightEncoder;
   private final Encoder leftEncoder;
-  private final int encoderCountsPerInch;
   private final double unitsPerRotationMeters;
   private final double kEncoderDistancePerPulseMeters;
 
-  public double navX_kP;
-  public double navX_kI;
-  public double navX_kD;
-  public double navX_tolerance;
-  public double navX_derivativeTolerance;
-  public double navX_error;
+  final AHRS navX;
+
+  final PIDController forwardController;
+  public double forwardController_kP;
+  public double forwardController_kI;
+  public double forwardController_kD;
+  public double forwardController_tolerance;
+  public double forwardController_derivativeTolerance;
+  public double forwardController_error;
+
+  final PIDController turnController;
+  public double turnController_kP;
+  public double turnController_kI;
+  public double turnController_kD;
+  public double turnController_tolerance;
+  public double turnController_derivativeTolerance;
+  public double turnController_error;
 
   private DifferentialDriveOdometry odometry;
 
@@ -83,15 +89,19 @@ public class Drivetrain extends SubsystemBase {
     navX = new AHRS();
     navX.reset();
 
-    navX_kP = .1; navX_kI = 0; navX_kD = 0;
-    navX_tolerance = 1;
-    navX_derivativeTolerance = .01;
-    navX_error = -navX.getRate();
+    forwardController_kP = .1; forwardController_kI = 0; forwardController_kD = 0;
+    forwardController_tolerance = 1;
+    forwardController_derivativeTolerance = .01;
+    forwardController_error = -navX.getRate();
+    forwardController = new PIDController(forwardController_kP, forwardController_kI, forwardController_kD);
+    forwardController.setTolerance(forwardController_tolerance, forwardController_derivativeTolerance);
 
-    navX_PID = new PIDController(navX_kP, navX_kI, navX_kD);
-    navX_PID.setTolerance(navX_tolerance, navX_derivativeTolerance);
-
-    encoderCountsPerInch = 0;
+    turnController_kP = .1; turnController_kI = 0; turnController_kD = 0;
+    turnController_tolerance = 1;
+    turnController_derivativeTolerance = .01;
+    turnController_error = -navX.getRate();
+    turnController = new PIDController(turnController_kP, turnController_kI, turnController_kD);
+    turnController.setTolerance(turnController_tolerance, turnController_derivativeTolerance);
     
     odometry = new DifferentialDriveOdometry(navX.getRotation2d());
 
@@ -107,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
     odometry.update(navX.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
   }
 
-  // Motors
+  // Drive ///////////////////////////////////////////////////////////////////////////////////////
 
   public void driveByPercent(double leftSpeed, double rightSpeed)
   {
@@ -115,12 +125,18 @@ public class Drivetrain extends SubsystemBase {
       frontRightDrive.set(ControlMode.PercentOutput, rightSpeed);
   }
 
-  public void tankDriveVolts(double leftVolts, double rightVolts) {
+  public void driveByAngle(double targetAngle){
+    double calculatedPID = turnController.calculate(getAngle(), targetAngle);
+    frontRightDrive.set(ControlMode.PercentOutput, calculatedPID);
+    backLeftDrive.set(ControlMode.PercentOutput, -calculatedPID);
+  }
+
+  public void driveByVolts(double leftVolts, double rightVolts) {
     backLeftDrive.setVoltage(leftVolts);
     frontRightDrive.setVoltage(rightVolts);
   }
 
-  // Encoders
+  // Encoders ///////////////////////////////////////////////////////////////////////////////////////
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
@@ -136,7 +152,25 @@ public class Drivetrain extends SubsystemBase {
     rightEncoder.reset();
   }
 
-  // Gyro
+  public boolean atTargetDistance()
+  {
+    return forwardController.atSetpoint();
+  }
+
+  public void resetForwardController()
+  {
+    forwardController.reset();
+  }
+
+  public double getLeftTurnRate() {
+    return -leftEncoder.getRate();
+  }
+
+  public double getRightTurnRate() {
+    return -rightEncoder.getRate();
+  }
+
+  // Gyro ///////////////////////////////////////////////////////////////////////////////////////
 
   // For degrees going beyond 360 and below 0
   public double getAngle()
@@ -149,31 +183,25 @@ public class Drivetrain extends SubsystemBase {
     return navX.getRotation2d().getDegrees();
   }
 
-  public void faceAngle(double targetAngle){
-    double calculatedPID = navX_PID.calculate(getAngle(), targetAngle);
-    frontRightDrive.set(ControlMode.PercentOutput, calculatedPID);
-    backLeftDrive.set(ControlMode.PercentOutput, -calculatedPID);
-  }
-
   public void zeroHeading() {
     navX.reset();
   }
 
   public boolean atTargetAngle()
   {
-    return navX_PID.atSetpoint();
+    return turnController.atSetpoint();
   }
 
-  public void resetNavXPID()
+  public void resetTurnController()
   {
-    navX_PID.reset();
+    turnController.reset();
   }
 
   public double getTurnRate() {
     return -navX.getRate();
   }
 
-  // Odometry
+  // Odometry ///////////////////////////////////////////////////////////////////////////////////////
 
   public Pose2d getPose(){
     return odometry.getPoseMeters();

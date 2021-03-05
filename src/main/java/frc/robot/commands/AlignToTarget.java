@@ -5,24 +5,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Drivetrain;
 /* Procedure
 1) Given: Currently tracking a target
 2) Find where the target's position on the x-axis is
 3) Drive/rotate to the center
 */
+import frc.robot.subsystems.Limelight;
 
 public class AlignToTarget extends CommandBase {
   /** Creates a new AlignToTarget. */
-  private final Vision m_vision;
+  private final Limelight m_limelight;
   private final Drivetrain m_drivetrain;
-  public AlignToTarget(Vision vision, Drivetrain drivetrain) {
+  public AlignToTarget(Limelight vision, Drivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_vision = vision;
+    m_limelight = vision;
     m_drivetrain = drivetrain;
 
-    addRequirements(m_vision);
+    addRequirements(m_limelight);
     addRequirements(m_drivetrain);
   }
 
@@ -33,11 +34,11 @@ public class AlignToTarget extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_vision.IsTrackingTarget()) {
-      if (m_vision.TargetPos()[0] < -3) {
+    if (m_limelight.IsTrackingTarget()) {
+      if (m_limelight.TargetPos()[0] < -3) {
           m_drivetrain.driveByPercent(.2, -.2);
       }      
-      else if (m_vision.TargetPos()[0] > 3) {
+      else if (m_limelight.TargetPos()[0] > 3) {
           m_drivetrain.driveByPercent(-.2, .2);         
       }
       else {

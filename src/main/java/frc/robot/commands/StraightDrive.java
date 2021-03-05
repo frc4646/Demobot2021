@@ -31,8 +31,8 @@ public class StraightDrive extends CommandBase {
     else driveDirection = -1;
 
     //Drives the robot straight
-    m_drivetrain.driveByPercent((.5 - m_drivetrain.navX_kP * m_drivetrain.navX_error ) * driveDirection, 
-                                (.5 + m_drivetrain.navX_kP * m_drivetrain.navX_error ) * driveDirection);
+    m_drivetrain.driveByPercent((.5 - m_drivetrain.turnController_kP * m_drivetrain.turnController_error ) * driveDirection, 
+                                (.5 + m_drivetrain.turnController_kP * m_drivetrain.turnController_error ) * driveDirection);
   }
 
   // Called once the command ends or is interrupted.

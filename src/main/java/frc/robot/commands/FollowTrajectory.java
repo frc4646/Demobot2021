@@ -98,7 +98,7 @@ public class FollowTrajectory extends CommandBase {
         new PIDController(PathweaverConstants.kPDriveVel, 0, 0),
         new PIDController(PathweaverConstants.kPDriveVel, 0, 0),
         // RamseteCommand passes volts to the callback
-        m_drivetrain::tankDriveVolts,
+        m_drivetrain::driveByVolts,
         m_drivetrain
     );
   }

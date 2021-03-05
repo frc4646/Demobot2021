@@ -54,7 +54,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final FlagWaver m_flagwaver = new FlagWaver();
-  private final Vision m_vision = new Vision();
+  private final Limelight m_limelight = new Limelight();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
@@ -81,8 +81,8 @@ public class RobotContainer {
     new JoystickButton(gamepad, XboxController.Button.kA.value).whenPressed(new FlagWave(m_flagwaver));
     new JoystickButton(gamepad, XboxController.Button.kB.value).whenPressed(new FlagStop(m_flagwaver));
     new JoystickButton(gamepad, XboxController.Button.kY.value).whileHeld(new StraightDrive(m_drivetrain));
-    new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTarget(m_vision, m_drivetrain));
-    new JoystickButton(gamepad, XboxController.Button.kBumperRight.value).whileHeld(new BellSpeedThroughTarget(m_flagwaver, m_vision));
+    new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTarget(m_limelight, m_drivetrain));
+    new JoystickButton(gamepad, XboxController.Button.kBumperRight.value).whileHeld(new BellSpeedThroughTarget(m_flagwaver, m_limelight));
 
     new GetDpadUp().whenPressed(new FaceAngle(0, m_drivetrain));
     new GetDpadRight().whenPressed(new FaceAngle(90, m_drivetrain));
@@ -121,12 +121,12 @@ public class RobotContainer {
         new PIDController(PathweaverConstants.kPDriveVel, 0, 0),
         new PIDController(PathweaverConstants.kPDriveVel, 0, 0),
         // RamseteCommand passes volts to the callback
-        m_drivetrain::tankDriveVolts,
+        m_drivetrain::driveByVolts,
         m_drivetrain
     );
 
     m_drivetrain.resetOdometry(test1Trajectory.getInitialPose());
-    return ramseteCommand.andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
+    return ramseteCommand.andThen(() -> m_drivetrain.driveByVolts(0, 0));
   }
 
   public static double getLeftStickY()

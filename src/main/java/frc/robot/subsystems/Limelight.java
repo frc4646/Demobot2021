@@ -10,7 +10,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Vision extends SubsystemBase {
+public class Limelight extends SubsystemBase {
   NetworkTable table;
 
   NetworkTableEntry tv;
@@ -30,7 +30,7 @@ public class Vision extends SubsystemBase {
   double targetHeight;
 
   /** Creates a new Vision. */
-  public Vision() {
+  public Limelight() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
     tv = table.getEntry("tv");
     tx = table.getEntry("tx");
