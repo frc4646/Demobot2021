@@ -20,7 +20,7 @@ public class PhotonVision extends SubsystemBase {
   private final double CAMERA_HEIGHT_METERS;
   private final double TARGET_HEIGHT_METERS;
   private final double CAMERA_PITCH_RADIANS;
-  private final double GOAL_RANGE_METERS;
+  public final double GOAL_RANGE_METERS;
 
   private PhotonCamera camera;
   private PhotonPipelineResult result;
@@ -100,7 +100,6 @@ public class PhotonVision extends SubsystemBase {
     return PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, TARGET_HEIGHT_METERS, CAMERA_PITCH_RADIANS, 
       Math.toRadians(BestTarget().getPitch()));
   }
-
   public double DistanceToTarget(PhotonTrackedTarget target)
   {
     return PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, TARGET_HEIGHT_METERS, CAMERA_PITCH_RADIANS, 
@@ -112,11 +111,46 @@ public class PhotonVision extends SubsystemBase {
     return PhotonUtils.estimateCameraToTargetTranslation(
       DistanceToTarget(), Rotation2d.fromDegrees(-BestTarget().getYaw()));
   }
-
   public Translation2d TranslationToTarget(PhotonTrackedTarget target)
   {
     return PhotonUtils.estimateCameraToTargetTranslation(
       DistanceToTarget(target), Rotation2d.fromDegrees(-target.getYaw()));
+  }
+
+  public double TargetPitch()
+  {
+    return BestTarget().getPitch();
+  }
+  public double TargetPitch(PhotonTrackedTarget target)
+  {
+    return target.getPitch();
+  }
+  
+  public double TargetSkew()
+  {
+    return BestTarget().getSkew();
+  }
+  public double TargetSkew(PhotonTrackedTarget target)
+  {
+    return target.getSkew();
+  }
+
+  public double TargetYaw()
+  {
+    return BestTarget().getYaw();
+  }
+  public double TargetYaw(PhotonTrackedTarget target)
+  {
+    return target.getYaw();
+  }
+
+  public double TargetSize()
+  {
+    return BestTarget().getArea();
+  }
+  public double TargetSize(PhotonTrackedTarget target)
+  {
+    return target.getArea();
   }
 
   public double latencySeconds()

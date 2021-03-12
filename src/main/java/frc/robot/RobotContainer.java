@@ -19,7 +19,8 @@ import frc.robot.commands.FlagWave;
 import frc.robot.commands.FlagStop;
 import frc.robot.commands.StraightDrive;
 import frc.robot.commands.FaceAngle;
-import frc.robot.commands.AlignToTarget;
+import frc.robot.commands.AlignToTargetLimelight;
+import frc.robot.commands.AlignToTargetPhoton;
 import frc.robot.commands.BellSpeedThroughTarget;
 
 //Pathweaver stuff
@@ -55,6 +56,7 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final FlagWaver m_flagwaver = new FlagWaver();
   private final Limelight m_limelight = new Limelight();
+  private final PhotonVision m_photonvision = new PhotonVision();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
@@ -81,7 +83,9 @@ public class RobotContainer {
     new JoystickButton(gamepad, XboxController.Button.kA.value).whenPressed(new FlagWave(m_flagwaver));
     new JoystickButton(gamepad, XboxController.Button.kB.value).whenPressed(new FlagStop(m_flagwaver));
     new JoystickButton(gamepad, XboxController.Button.kY.value).whileHeld(new StraightDrive(m_drivetrain));
-    new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTarget(m_limelight, m_drivetrain));
+    //new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTargetLimelight(m_limelight, m_drivetrain));
+    new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTargetPhoton(m_photonvision, m_drivetrain));
+    new JoystickButton(gamepad, XboxController.Button.kBumperLeft.value).whenPressed(new AlignToTargetPhoton(m_photonvision, m_drivetrain));
     new JoystickButton(gamepad, XboxController.Button.kBumperRight.value).whileHeld(new BellSpeedThroughTarget(m_flagwaver, m_limelight));
 
     new GetDpadUp().whenPressed(new FaceAngle(0, m_drivetrain));

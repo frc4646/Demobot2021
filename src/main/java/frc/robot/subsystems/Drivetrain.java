@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.PathweaverConstants;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 
@@ -62,6 +63,7 @@ public class Drivetrain extends SubsystemBase {
   public double turnController_derivativeTolerance;
   public double turnController_error;
 
+  private DifferentialDrive differentialDrive;
   private DifferentialDriveOdometry odometry;
 
   public Drivetrain() {
@@ -102,6 +104,8 @@ public class Drivetrain extends SubsystemBase {
     turnController_error = -navX.getRate();
     turnController = new PIDController(turnController_kP, turnController_kI, turnController_kD);
     turnController.setTolerance(turnController_tolerance, turnController_derivativeTolerance);
+
+    differentialDrive = new DifferentialDrive(backLeftDrive, frontRightDrive);
     
     odometry = new DifferentialDriveOdometry(navX.getRotation2d());
 
@@ -134,6 +138,11 @@ public class Drivetrain extends SubsystemBase {
   public void driveByVolts(double leftVolts, double rightVolts) {
     backLeftDrive.setVoltage(leftVolts);
     frontRightDrive.setVoltage(rightVolts);
+  }
+
+  public void arcadeDrive(double speed, double rotation)
+  {
+    differentialDrive.arcadeDrive(speed, rotation);
   }
 
   // Encoders ///////////////////////////////////////////////////////////////////////////////////////
