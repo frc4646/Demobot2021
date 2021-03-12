@@ -22,7 +22,7 @@ import frc.robot.commands.FaceAngle;
 import frc.robot.commands.AlignToTargetLimelight;
 import frc.robot.commands.AlignToTargetPhoton;
 import frc.robot.commands.BellSpeedThroughTarget;
-
+import frc.robot.commands.DriveToTargetPhoton;
 //Pathweaver stuff
 import frc.robot.PathweaverConstants;
 
@@ -85,7 +85,7 @@ public class RobotContainer {
     new JoystickButton(gamepad, XboxController.Button.kY.value).whileHeld(new StraightDrive(m_drivetrain));
     //new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTargetLimelight(m_limelight, m_drivetrain));
     new JoystickButton(gamepad, XboxController.Button.kX.value).whenPressed(new AlignToTargetPhoton(m_photonvision, m_drivetrain));
-    new JoystickButton(gamepad, XboxController.Button.kBumperLeft.value).whenPressed(new AlignToTargetPhoton(m_photonvision, m_drivetrain));
+    new JoystickButton(gamepad, XboxController.Button.kBumperLeft.value).whenPressed(new DriveToTargetPhoton(m_photonvision, m_drivetrain));
     new JoystickButton(gamepad, XboxController.Button.kBumperRight.value).whileHeld(new BellSpeedThroughTarget(m_flagwaver, m_limelight));
 
     new GetDpadUp().whenPressed(new FaceAngle(0, m_drivetrain));
