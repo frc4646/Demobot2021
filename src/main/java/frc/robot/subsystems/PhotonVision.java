@@ -68,11 +68,14 @@ public class PhotonVision extends SubsystemBase {
     result = camera.getLatestResult();
 
    // Get information from target.
-   yaw = BestTarget().getYaw();
-   pitch = BestTarget().getPitch();
-   area = BestTarget().getArea();
-   skew = BestTarget().getSkew();
-   pose = BestTarget().getCameraToTarget();
+   if (HasTargets())
+   {
+    yaw = BestTarget().getYaw();
+    pitch = BestTarget().getPitch();
+    area = BestTarget().getArea();
+    skew = BestTarget().getSkew();
+    pose = BestTarget().getCameraToTarget();
+   }
   }
 
   public List<PhotonTrackedTarget> Targets()
