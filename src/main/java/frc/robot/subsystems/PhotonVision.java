@@ -46,7 +46,7 @@ public class PhotonVision extends SubsystemBase {
    GOAL_RANGE_METERS = Units.feetToMeters(3);
 
    // Change this to match the name of your camera
-   camera = new PhotonCamera("photonvision");
+   camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
    result = camera.getLatestResult();
 
    // PID constants should be tuned per robot
