@@ -125,19 +125,22 @@ public class Drivetrain extends SubsystemBase {
 
   public void driveByPercent(double leftSpeed, double rightSpeed)
   {
-      backLeftDrive.set(ControlMode.PercentOutput, leftSpeed);
-      frontRightDrive.set(ControlMode.PercentOutput, rightSpeed);
+      //backLeftDrive.set(ControlMode.PercentOutput, leftSpeed);
+      //frontRightDrive.set(ControlMode.PercentOutput, rightSpeed);
+      differentialDrive.tankDrive(leftSpeed, rightSpeed);
   }
 
   public void driveByAngle(double targetAngle){
     double calculatedPID = turnController.calculate(getAngle(), targetAngle);
-    frontRightDrive.set(ControlMode.PercentOutput, calculatedPID);
-    backLeftDrive.set(ControlMode.PercentOutput, -calculatedPID);
+    //frontRightDrive.set(ControlMode.PercentOutput, calculatedPID);
+    //backLeftDrive.set(ControlMode.PercentOutput, -calculatedPID);
+    differentialDrive.tankDrive(calculatedPID, -calculatedPID);
   }
 
   public void driveByVolts(double leftVolts, double rightVolts) {
     backLeftDrive.setVoltage(leftVolts);
     frontRightDrive.setVoltage(rightVolts);
+    differentialDrive.feed();
   }
 
   public void arcadeDrive(double speed, double rotation)
