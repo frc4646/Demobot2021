@@ -58,8 +58,8 @@ public class PhotonVision extends SubsystemBase {
    ANGULAR_D = 0.0;
    turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
-   camera.setDriverMode(true);
-   camera.setPipelineIndex(2);
+   camera.setDriverMode(false);
+   //camera.setPipelineIndex(2);
   }
 
   @Override
