@@ -77,8 +77,8 @@ public class Drivetrain extends SubsystemBase {
     //backRightDrive.set(ControlMode.Follower, frontRightDrive.getBaseID());
     backRightDrive.follow(frontRightDrive);
     
-    frontRightDrive.setInverted(true);
-    backRightDrive.setInverted(true);
+    // frontRightDrive.setInverted(true);
+    // backRightDrive.setInverted(true);
 
     leftEncoder = new Encoder(Constants.leftEncoderValues[0], Constants.leftEncoderValues[1]);
     rightEncoder = new Encoder(Constants.rightEncoderValues[0], Constants.rightEncoderValues[1]);
@@ -139,7 +139,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void driveByVolts(double leftVolts, double rightVolts) {
     backLeftDrive.setVoltage(leftVolts);
-    frontRightDrive.setVoltage(rightVolts);
+    frontRightDrive.setVoltage(-rightVolts);
     differentialDrive.feed();
   }
 
